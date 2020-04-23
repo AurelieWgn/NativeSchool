@@ -1,8 +1,6 @@
 import React from "react";
 // import SchoolReducer from "../Reducers/SchoolReducer";
 
-const SchoolContext = React.createContext();
-
 const initialState = {
   students: [
     { id: 1, name: "Alice", lessons: [1, 2], absence: 0, notes: [13, 9, 20] },
@@ -43,6 +41,8 @@ const SchoolReducer = (state, action) => {
       throw new Error("Bad Action Type");
   }
 };
+
+const SchoolContext = React.createContext();
 
 const SchoolProvider = ({ children }) => {
   const [state, dispatch] = React.useReducer(
