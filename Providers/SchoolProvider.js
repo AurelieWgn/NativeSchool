@@ -19,36 +19,54 @@ const initialState = {
   levels: [],
   oders: false,
 };
+const SchoolContext = React.createContext();
 
 const SchoolReducer = (state, action) => {
-  let student;
+  let student, students;
+
   switch (action.type) {
     case "INCREMENTE_ATTENDANCE":
-      student = state.students.find((s) => s.id === action.id);
+      student = { ...state.students.find((s) => s.id === action.id) };
       student.absence++;
 
-      // TODO essayer de coller au pattern du Flux ...
-      return { ...state };
+      // Create new tab
+      students = state.students.map((s) => {
+        if (s.id != action.id) return s;
+
+        return student;
+      });
+
+      return {
+        ...state,
+        students,
+      };
 
     case "DECREMENT_ATTENDANCE":
-      student = state.students.find((s) => s.id === action.id);
+      student = { ...state.students.find((s) => s.id === action.id) };
 
       if (student.absence > 0) student.absence--;
 
-      return { ...state };
+      students = state.students.map((s) => {
+        if (s.id != action.id) return s;
+
+        return student;
+      });
+
+      return {
+        ...state,
+        students,
+      };
+
+    case "RESET":
+      return { ...initialState };
 
     default:
       throw new Error("Bad Action Type");
   }
 };
 
-const SchoolContext = React.createContext();
-
 const SchoolProvider = ({ children }) => {
-  const [state, dispatch] = React.useReducer(
-    SchoolReducer,
-    JSON.parse(JSON.stringify(initialState))
-  );
+  const [state, dispatch] = React.useReducer(SchoolReducer, initialState);
 
   return (
     <SchoolContext.Provider value={[state, dispatch]}>
